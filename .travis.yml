@@ -23,6 +23,16 @@ before_script:
 
   - wget "https://raw.githubusercontent.com/asherkin/SteamTools/master/plugin/steamtools.inc" -O include/steamtools.inc
   - wget "https://raw.githubusercontent.com/haxtonsale/smtester.inc/master/scripting/include/smtester.inc" -O include/smtester.inc
+
+  - mkdir include/json
+  - mkdir include/json/helpers
+  - wget "https://raw.githubusercontent.com/clugg/sm-json/master/addons/sourcemod/scripting/include/json.inc" -O include/json.inc
+  - wget "https://raw.githubusercontent.com/clugg/sm-json/master/addons/sourcemod/scripting/include/json/array.inc" -O include/json/array.inc
+  - wget "https://raw.githubusercontent.com/clugg/sm-json/master/addons/sourcemod/scripting/include/json/definitions.inc" -O include/json/definitions.inc
+  - wget "https://raw.githubusercontent.com/clugg/sm-json/master/addons/sourcemod/scripting/include/json/object.inc" -O include/json/object.inc
+  - wget "https://raw.githubusercontent.com/clugg/sm-json/master/addons/sourcemod/scripting/include/json/helpers/decode.inc" -O include/json/helpers/decode.inc
+  - wget "https://raw.githubusercontent.com/clugg/sm-json/master/addons/sourcemod/scripting/include/json/helpers/encode.inc" -O include/json/helpers/encode.inc
+  - wget "https://raw.githubusercontent.com/clugg/sm-json/master/addons/sourcemod/scripting/include/json/helpers/string.inc" -O include/json/helpers/string.inc
   
   - sed -i -e "s/funcenum/typeset/g" include/steamtools.inc
   - sed -i -e "s/public(HTTPRequestHandle:HTTPRequest, bool:requestSuccessful, HTTPStatusCode:statusCode),/function void (HTTPRequestHandle HTTPRequest, bool requestSuccessful, HTTPStatusCode statusCode);/g" include/steamtools.inc
