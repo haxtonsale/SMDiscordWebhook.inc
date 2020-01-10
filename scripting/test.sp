@@ -24,14 +24,18 @@
 StringMap g_TestNames;
 Profiler g_Profiler;
 
-public void OnPluginStart()
+#if defined _steamtools_included
+public int Steam_FullyLoaded()
+#elseif defined _SteamWorks_Included
+public int SteamWorks_SteamServersConnected()
+#endif
 {
 	SMTester_Start(true);
 	SMTester_CreateNode("Tests");
-	SMTester_Async("DiscordWebhook_Execute");
-	SMTester_Async("DiscordWebhook_ExecuteRaw");
-	SMTester_Async("DiscordWebhook_ExecuteJson");
-	SMTester_Async("DiscordWebhook_ExecuteJson (with embed methodmaps)");
+	SMTester_Async("DiscordWebhook_Execute", .timeout = 30.0);
+	SMTester_Async("DiscordWebhook_ExecuteRaw", .timeout = 30.0);
+	SMTester_Async("DiscordWebhook_ExecuteJson", .timeout = 30.0);
+	SMTester_Async("DiscordWebhook_ExecuteJson (with embed methodmaps)", .timeout = 30.0);
 	SMTester_Finish();
 	
 	g_TestNames = new StringMap();
