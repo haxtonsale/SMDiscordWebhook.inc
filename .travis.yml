@@ -1,0 +1,76 @@
+language: minimal
+
+sudo: false
+
+addons:
+    apt_packages:
+      - lib32stdc++6
+      - libc6
+      - libncurses5:i386
+      - libtinfo5:i386
+      - libcurl3-gnutls:i386
+
+env:
+  - SMVERSION=1.10 MMVERSION=1.11
+
+install:
+  - wget --input-file=http://sourcemod.net/smdrop/$SMVERSION/sourcemod-latest-linux
+  - tar -xzf $(cat sourcemod-latest-linux)
+
+before_script:
+  - cp -R configs/ scripting/ addons/sourcemod/
+  - cd addons/sourcemod/scripting
+
+  - wget "https://raw.githubusercontent.com/asherkin/SteamTools/master/plugin/steamtools.inc" -O include/steamtools.inc
+  - wget "https://raw.githubusercontent.com/haxtonsale/smtester.inc/master/scripting/include/smtester.inc" -O include/smtester.inc
+  
+  - sed -i -e "s/funcenum/typeset/g" include/steamtools.inc
+  - sed -i -e "s/public(HTTPRequestHandle:HTTPRequest, bool:requestSuccessful, HTTPStatusCode:statusCode),/function void (HTTPRequestHandle HTTPRequest, bool requestSuccessful, HTTPStatusCode statusCode);/g" include/steamtools.inc
+  - sed -i -e "s/public(HTTPRequestHandle:HTTPRequest, bool:requestSuccessful, HTTPStatusCode:statusCode, any:contextData),/function void (HTTPRequestHandle HTTPRequest, bool requestSuccessful, HTTPStatusCode statusCode, any contextData);/g" include/steamtools.inc
+  
+  - chmod +x ./spcomp
+ 
+jobs:
+    include:
+      - stage: compile
+        script:
+          - ./spcomp test.sp
+      - stage: test
+        script:
+          - sed -i -e "s/#define ID1/#define ID1 \"$WEBHOOK1_ID\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define TOKEN1 \"$WEBHOOK1_TOKEN\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define ID2 \"$WEBHOOK2_ID\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define TOKEN2 \"$WEBHOOK2_TOKEN\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define ID3 \"$WEBHOOK3_ID\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define TOKEN3 \"$WEBHOOK3_TOKEN\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define ID4 \"$WEBHOOK4_ID\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define TOKEN4 \"$WEBHOOK4_TOKEN\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define ID5 \"$WEBHOOK5_ID\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define TOKEN5 \"$WEBHOOK5_TOKEN\"/g" test.sp
+          - ./spcomp test.sp
+          
+          - mv test.smx ../plugins
+          
+          - cd ../../..
+          
+          - wget "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz"
+          - mkdir steamcmd
+          - tar -xzf steamcmd_linux.tar.gz -C steamcmd
+          - cd steamcmd
+          - mkdir tf2
+          - ./steamcmd.sh +login anonymous +force_install_dir ./tf2 +app_update 232250 +quit
+          - cd ..
+          - cp -R addons/ steamcmd/tf2/tf/
+          - cd steamcmd/tf2/tf
+          
+          - wget --input-file=https://mms.alliedmods.net/mmsdrop/$MMVERSION/mmsource-latest-linux
+          - tar -xzf $(cat mmsource-latest-linux)
+          
+          - wget https://builds.limetech.io/files/steamtools-0.10.0-git179-54fdc51-linux.zip
+          - unzip -n steamtools-0.10.0-git179-54fdc51-linux.zip
+          
+          - chmod -R +w ../
+          
+          - ../srcds_run +map koth_nucleus +tf_allow_server_hibernation 0 +tf_bot_join_after_player 0 +sv_cheats 1 +mp_autoteambalance 0 || true
+          
+          - if grep -q "1" addons/sourcemod/logs/test_result.txt; then exit 1; fi

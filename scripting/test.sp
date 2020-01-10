@@ -4,6 +4,7 @@
 //#define DISCORDWEBHOOK_USE_STEAMWORKS
 //#define DISCORDWEBHOOK_USE_STEAMTOOLS
 #include <discordwebhook>
+#include <smtester>
 
 #define ID1
 #define TOKEN1
@@ -20,10 +21,25 @@
 #define ID5
 #define TOKEN5
 
+StringMap g_TestNames;
 Profiler g_Profiler;
 
 public void OnPluginStart()
 {
+	SMTester_Start(true);
+	SMTester_CreateNode("Tests");
+	SMTester_Async("DiscordWebhook_Execute");
+	SMTester_Async("DiscordWebhook_ExecuteRaw");
+	SMTester_Async("DiscordWebhook_ExecuteJson");
+	SMTester_Async("DiscordWebhook_ExecuteJson (with embed methodmaps)");
+	SMTester_Finish();
+	
+	g_TestNames = new StringMap();
+	g_TestNames.SetString(ID1, "DiscordWebhook_Execute");
+	g_TestNames.SetString(ID2, "DiscordWebhook_ExecuteRaw");
+	g_TestNames.SetString(ID4, "DiscordWebhook_ExecuteJson");
+	g_TestNames.SetString(ID5, "DiscordWebhook_ExecuteJson (with embed methodmaps)");
+	
 	g_Profiler = new Profiler();
 	g_Profiler.Start();
 	DiscordWebhook_Execute(ID1, TOKEN1, "Test message!", OnDWResponseReceived, "Replaced username", "https://sun9-28.userapi.com/c854428/v854428793/1be6dc/gFNtrILIl1A.jpg");
@@ -136,14 +152,23 @@ void TestJsonWithMethodmaps()
 
 void OnDWResponseReceived(int code, char[] webhookId, DWRateLimits rateLimits)
 {
+	char testname[64];
+	g_TestNames.GetString(webhookId, testname, sizeof(testname));
+	
 	if (code >= 400)
 	{
 		char err[256];
 		DiscordWebhook_GetErrorMsg(err, sizeof(err));
 		LogError("SMDiscordWebhook HTML Error %i: %s", code, err);
+		
+		if (testname[0] != '\0')
+			SMTester_AsyncAssert(testname, false, "Returned %i", code);
 	}
 	else
 	{
+		if (testname[0] != '\0')
+			SMTester_AsyncAssert(testname, true);
+		
 		//PrintToServer("(%s): Limit %i; Remaining %i; Reset %i", webhookId, rateLimits.Limit, rateLimits.Remaining, rateLimits.Reset);
 	}
 }
