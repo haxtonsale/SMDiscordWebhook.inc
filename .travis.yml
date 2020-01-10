@@ -18,7 +18,7 @@ install:
   - tar -xzf $(cat sourcemod-latest-linux)
 
 before_script:
-  - cp -R configs/ scripting/ addons/sourcemod/
+  - cp -R scripting/ addons/sourcemod/
   - cd addons/sourcemod/scripting
 
   - wget "https://raw.githubusercontent.com/asherkin/SteamTools/master/plugin/steamtools.inc" -O include/steamtools.inc
@@ -34,6 +34,16 @@ jobs:
     include:
       - stage: compile
         script:
+          - sed -i -e "s/#define ID1/#define ID1 \"$WEBHOOK1_ID\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define TOKEN1 \"$WEBHOOK1_TOKEN\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define ID2 \"$WEBHOOK2_ID\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define TOKEN2 \"$WEBHOOK2_TOKEN\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define ID3 \"$WEBHOOK3_ID\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define TOKEN3 \"$WEBHOOK3_TOKEN\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define ID4 \"$WEBHOOK4_ID\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define TOKEN4 \"$WEBHOOK4_TOKEN\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define ID5 \"$WEBHOOK5_ID\"/g" test.sp
+          - sed -i -e "s/#define ID1/#define TOKEN5 \"$WEBHOOK5_TOKEN\"/g" test.sp
           - ./spcomp test.sp
       - stage: test
         script:
