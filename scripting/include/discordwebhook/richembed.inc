@@ -159,37 +159,57 @@ methodmap RichEmbed < JSON_Object
 		return this;
 	}
 	
-	public RichEmbed SetFooter(EmbedFooter footer)
+	public RichEmbed SetFooterObj(EmbedFooter footer)
 	{
 		this.SetObject("footer", view_as<JSON_Object>(footer));
 		return this;
 	}
+	public RichEmbed SetFooter(const char[] text, const char[] iconUrl = "", const char[] proxyIconUrl = "")
+	{
+		return this.SetFooterObj(new EmbedFooter(text, iconUrl, proxyIconUrl));
+	}
 	
-	public RichEmbed SetImage(EmbedImage image)
+	public RichEmbed SetImageObj(EmbedImage image)
 	{
 		this.SetObject("image", view_as<JSON_Object>(image));
 		return this;
 	}
+	public RichEmbed SetImage(const char[] url = "", const char[] proxyUrl = "")
+	{
+		return this.SetImageObj(new EmbedImage(url, proxyUrl));
+	}
 	
-	public RichEmbed SetThumbnail(EmbedImage thumbnail)
+	public RichEmbed SetThumbnailObj(EmbedImage thumbnail)
 	{
 		this.SetObject("thumbnail", view_as<JSON_Object>(thumbnail));
 		return this;
 	}
+	public RichEmbed SetThumbnail(const char[] url = "", const char[] proxyUrl = "")
+	{
+		return this.SetThumbnailObj(new EmbedImage(url, proxyUrl));
+	}
 	
-	public RichEmbed SetAuthor(EmbedAuthor author)
+	public RichEmbed SetAuthorObj(EmbedAuthor author)
 	{
 		this.SetObject("author", view_as<JSON_Object>(author));
 		return this;
 	}
+	public RichEmbed SetAuthor(const char[] name = "", const char[] url = "", const char[] iconUrl = "", const char[] proxyIconUrl = "")
+	{
+		return this.SetAuthorObj(new EmbedAuthor(name, url, iconUrl, proxyIconUrl));
+	}
 	
-	public RichEmbed AddField(EmbedField field)
+	public RichEmbed AddFieldObj(EmbedField field)
 	{
 		if (!this.HasKey("fields"))
 			this.SetObject("fields", new JSON_Array());
 		
 		view_as<JSON_Array>(this.GetObject("fields")).PushObject(view_as<JSON_Object>(field));
 		return this;
+	}
+	public RichEmbed AddField(const char[] name, const char[] value, bool inline = false)
+	{
+		return this.AddFieldObj(new EmbedField(name, value, inline));
 	}
 	
 	public RichEmbed()

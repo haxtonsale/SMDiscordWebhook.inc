@@ -51,11 +51,11 @@ public int SteamWorks_SteamServersConnected()
     RichEmbed embed = new RichEmbed();
     embed.SetTitle("Embed Title");
     embed.SetColor(0x6E14FF);
-    embed.SetFooter(new EmbedFooter("Footer"));
-    embed.SetImage(new EmbedImage("https://sun9-56.userapi.com/c543105/v543105102/6f1ba/HvB5HmGHPCc.jpg"));
-    embed.SetAuthor(new EmbedAuthor("Author"));
-    embed.AddField(new EmbedField("Field 1", "Text", true));
-    embed.AddField(new EmbedField("Field 2", "More text", true));
+    embed.SetFooter("Footer");
+    embed.SetImage("https://sun9-56.userapi.com/c543105/v543105102/6f1ba/HvB5HmGHPCc.jpg");
+    embed.SetAuthor("Author");
+    embed.AddField("Field 1", "Text", true);
+    embed.AddField("Field 2", "More text", true);
     
     JSON_Array embeds = new JSON_Array();
     embeds.PushObject(embed);

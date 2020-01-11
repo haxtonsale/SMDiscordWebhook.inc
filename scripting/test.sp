@@ -136,14 +136,14 @@ void TestJsonWithMethodmaps()
 	                  .SetUrl("https://github.com/haxtonsale")
 	                  .SetTimestamp("2020-01-10T18:10:00.000Z")
 	                  .SetColor(0x6E14FF)
-	                  .SetFooter(new EmbedFooter("Footer text", "https://sun9-55.userapi.com/c543105/v543105788/6190f/vO_rcer0dz8.jpg"))
-	                  .SetImage(new EmbedImage("https://sun9-56.userapi.com/c543105/v543105102/6f1ba/HvB5HmGHPCc.jpg"))
-	                  .SetThumbnail(new EmbedImage("https://sun1-88.userapi.com/c856524/v856524904/aa1f6/IRHKoE_2_Ng.jpg"))
-	                  .SetAuthor(new EmbedAuthor("Haxton Sale", "https://github.com/haxtonsale", "https://avatars2.githubusercontent.com/u/26278199"))
-	                  .AddField(new EmbedField("Field 1", "Text", true))
-	                  .AddField(new EmbedField("Field 2", "Text", true))
-	                  .AddField(new EmbedField("Field 3", "Text"))
-	                  .AddField(new EmbedField("Field 4", "Text")));
+	                  .SetFooter("Footer text", "https://sun9-55.userapi.com/c543105/v543105788/6190f/vO_rcer0dz8.jpg")
+	                  .SetImage("https://sun9-56.userapi.com/c543105/v543105102/6f1ba/HvB5HmGHPCc.jpg")
+	                  .SetThumbnail("https://sun1-88.userapi.com/c856524/v856524904/aa1f6/IRHKoE_2_Ng.jpg")
+	                  .SetAuthor("Haxton Sale", "https://github.com/haxtonsale", "https://avatars2.githubusercontent.com/u/26278199")
+	                  .AddField("Field 1", "Text", true)
+	                  .AddField("Field 2", "Text", true)
+	                  .AddField("Field 3", "Text")
+	                  .AddField("Field 4", "Text"));
 	
 	DiscordWebhook_ExecuteJson(ID5, TOKEN5, "Test message!", OnDWResponseReceived, .embeds = embeds);
 	
