@@ -209,6 +209,35 @@ stock void DiscordWebhook_ExecuteRaw(const char[] webhookId,
 	#endif
 }
 
+stock void DiscordWebhook_Delete(const char[] webhookId, const char[] webhookToken, DiscordWebhook_OnResponse callback = INVALID_FUNCTION)
+{
+	char url[128];
+	FormatEx(url, sizeof(url), "https://discordapp.com/api/webhooks/%s/%s", webhookId, webhookToken);
+	
+	DataPack datapack;
+	if (callback != INVALID_FUNCTION)
+	{
+		datapack = new DataPack();
+		datapack.WriteString(webhookId);
+		datapack.WriteFunction(callback);
+	}
+	
+	#if defined _SteamWorks_Included
+	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodDELETE, url);
+	
+	if (callback != INVALID_FUNCTION)
+	{
+		SteamWorks_SetHTTPRequestContextValue(request, datapack);
+		SteamWorks_SetHTTPCallbacks(request, Webhook_DWRequestCompleted);
+	}
+	
+	SteamWorks_SendHTTPRequest(request);
+	#elseif defined _steamtools_included
+	HTTPRequestHandle request = Steam_CreateHTTPRequest(view_as<HTTPMethod>(5), url);
+	Steam_SendHTTPRequest(request, (callback != INVALID_FUNCTION) ? Webhook_DWRequestCompleted : INVALID_FUNCTION, datapack);
+	#endif
+}
+
 stock void DiscordWebhook_GetErrorMsg(char[] buffer, int bufferlen)
 {
 	strcopy(buffer, bufferlen, g_ErrorBuf);
