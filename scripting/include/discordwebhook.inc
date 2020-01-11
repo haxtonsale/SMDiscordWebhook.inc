@@ -114,6 +114,9 @@ stock void DiscordWebhook_Execute(const char[] webhookId,
 		SteamWorks_SetHTTPRequestGetOrPostParameter(request, "tts", "true");
 	
 	SteamWorks_SendHTTPRequest(request);
+	
+	if (callback == INVALID_FUNCTION)
+		delete request;
 	#elseif defined _steamtools_included
 	HTTPRequestHandle request = Steam_CreateHTTPRequest(HTTPMethod_POST, url);
 	Steam_SetHTTPRequestHeaderValue(request, "Content-Type", "application/x-www-form-urlencoded");
@@ -129,6 +132,9 @@ stock void DiscordWebhook_Execute(const char[] webhookId,
 		Steam_SetHTTPRequestGetOrPostParameter(request, "tts", "true");
 	
 	Steam_SendHTTPRequest(request, (callback != INVALID_FUNCTION) ? Webhook_DWRequestCompleted : INVALID_FUNCTION, datapack);
+	
+	if (callback == INVALID_FUNCTION)
+		Steam_ReleaseHTTPRequest(request);
 	#endif
 }
 
@@ -201,11 +207,17 @@ stock void DiscordWebhook_ExecuteRaw(const char[] webhookId,
 	}
 	
 	SteamWorks_SendHTTPRequest(request);
+	
+	if (callback == INVALID_FUNCTION)
+		delete request;
 	#elseif defined _steamtools_included
 	HTTPRequestHandle request = Steam_CreateHTTPRequest(HTTPMethod_POST, url);
 	Steam_SetHTTPRequestRawPostBody(request, body, strlen(body), contentType);
 	
 	Steam_SendHTTPRequest(request, (callback != INVALID_FUNCTION) ? Webhook_DWRequestCompleted : INVALID_FUNCTION, datapack);
+	
+	if (callback == INVALID_FUNCTION)
+		Steam_ReleaseHTTPRequest(request);
 	#endif
 }
 
@@ -232,9 +244,15 @@ stock void DiscordWebhook_Delete(const char[] webhookId, const char[] webhookTok
 	}
 	
 	SteamWorks_SendHTTPRequest(request);
+	
+	if (callback == INVALID_FUNCTION)
+		delete request;
 	#elseif defined _steamtools_included
 	HTTPRequestHandle request = Steam_CreateHTTPRequest(view_as<HTTPMethod>(5), url);
 	Steam_SendHTTPRequest(request, (callback != INVALID_FUNCTION) ? Webhook_DWRequestCompleted : INVALID_FUNCTION, datapack);
+	
+	if (callback == INVALID_FUNCTION)
+		Steam_ReleaseHTTPRequest(request);
 	#endif
 }
 
